@@ -1,5 +1,7 @@
 {
   "scripts": {
+    "build": "rollup -cw",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "push": "rollup -cw --environment DEST:main",
     "local": "rollup -cw --environment DEST:local"
   },
