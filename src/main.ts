@@ -7,7 +7,7 @@ import {Utils,CreepCount,RoleType} from '@/modules/utils'
 
 export const loop = errorMapper(() => {
     if(Game.time%10==0){
-        console.log('Version:0.11');
+        console.log('Version:0.13');
     }
     // 销毁死亡creep
     for(var name in Memory.creeps) {

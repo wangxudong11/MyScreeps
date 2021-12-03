@@ -2,7 +2,6 @@ export class Utils{
     
     private MaxEngery: Array<number> = [300,300,550,800,1300,1800,2300,2800,3300];
     static getBody(role:RoleType,rcl:number):BodyPartConstant[]{
-        
         return bodyPart[rcl][role];
     }
 }
@@ -13,28 +12,28 @@ export enum RoleType{
     Upgrader,
 }
 
-export class CreepCount {
-    [1]: {[RoleType.Harvester]:2,[RoleType.Builder]:1,[RoleType.Upgrader]:2};
-    [2]: {[RoleType.Harvester]:2,[RoleType.Builder]:1,[RoleType.Upgrader]:2};
-    [3]: {[RoleType.Harvester]:2,[RoleType.Builder]:1,[RoleType.Upgrader]:2};
-    [4]: {[RoleType.Harvester]:2,[RoleType.Builder]:1,[RoleType.Upgrader]:2};
+export const CreepCount = {
+    [1]: {[RoleType.Harvester]:2,[RoleType.Builder]:1,[RoleType.Upgrader]:2},
+    [2]: {[RoleType.Harvester]:2,[RoleType.Builder]:2,[RoleType.Upgrader]:2},
+    [3]: {[RoleType.Harvester]:2,[RoleType.Builder]:2,[RoleType.Upgrader]:2},
+    [4]: {[RoleType.Harvester]:2,[RoleType.Builder]:1,[RoleType.Upgrader]:2},
 }
-export class bodyPart{
-    [1]:{
+export const bodyPart={
+    [2]:{
         [RoleType.Harvester]:[WORK,MOVE,CARRY,MOVE,CARRY],
         [RoleType.Builder]:[WORK,MOVE,CARRY,MOVE,CARRY],
         [RoleType.Upgrader]:[WORK,MOVE,CARRY,MOVE,CARRY]
-    }
-    [2]:{
+    },
+    [1]:{
         [RoleType.Harvester]:[WORK,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY],
         [RoleType.Builder]:[WORK,WORK,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY],
         [RoleType.Upgrader]:[WORK,WORK,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY]
-    }
+    },
     [3]:{
         [RoleType.Harvester]:[WORK,WORK,WORK,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY],
         [RoleType.Builder]:[WORK,WORK,WORK,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY],
         [RoleType.Upgrader]:[WORK,WORK,WORK,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY,MOVE,CARRY]
-    }
+    },
 }
 
 export enum Role{
