@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { errorMapper } from './modules/errorMapper'
+import { ErrorMapper } from './modules/errorMapper'
 import {roleHarvester} from '@/roles/harvester'
 import {roleUpgrader} from '@/roles/upgrader'
 import {roleBuilder} from '@/roles/builder'
@@ -7,7 +7,7 @@ import {CreepCount,RoleType} from '@/utils'
 import assignall from '@/roomobjects'
 import memInit from '@/modules/memory'
 
-export const loop = errorMapper(() => {
+export const loop = ErrorMapper.wrapLoop(() => {
     memInit();
     assignall();
     if(Game.time%20==0){
@@ -84,3 +84,10 @@ export const loop = errorMapper(() => {
         }
     }
 })
+
+/**
+ * 接受两个数字并相加
+ */
+export const testFn = function (num1: number, num2: number): number {
+    return num1 + num2
+}  
