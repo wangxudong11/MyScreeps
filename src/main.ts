@@ -3,11 +3,15 @@ import { errorMapper } from './modules/errorMapper'
 import {roleHarvester} from '@/roles/harvester'
 import {roleUpgrader} from '@/roles/upgrader'
 import {roleBuilder} from '@/roles/builder'
-import {Utils,CreepCount,RoleType} from '@/modules/utils'
+import {CreepCount,RoleType} from '@/utils'
+import assignall from '@/roomobjects'
+import memInit from '@/modules/memory'
 
 export const loop = errorMapper(() => {
-    if(Game.time%10==0){
-        console.log('Version:0.13');
+    memInit();
+    assignall();
+    if(Game.time%20==0){
+        console.log('Version:0.15');
     }
     // 销毁死亡creep
     for(var name in Memory.creeps) {
@@ -17,27 +21,28 @@ export const loop = errorMapper(() => {
         }
     }
     var rcl=Game.spawns['Spawn1'].room.controller.level;
+    var spawn=Game.spawns['Spawn1'];
     // 检查creep数量并补充
     var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     var upgraders=_.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     var builders=_.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-    if(harvesters.length < CreepCount[rcl][RoleType.Harvester]) {
-        var newName = 'Harvester' + Game.time;
-        console.log('Spawning new harvester: ' + newName);
-        Game.spawns['Spawn1'].spawnCreep(Utils.getBody(RoleType.Harvester,rcl), newName, 
-            {memory:  {role: 'harvester'}});
-    }
     if(upgraders.length < CreepCount[rcl][RoleType.Upgrader]) {
         var newName = 'Upgrader' + Game.time;
         console.log('Spawning new harvester: ' + newName);
-        Game.spawns['Spawn1'].spawnCreep(Utils.getBody(RoleType.Upgrader,rcl), newName, 
+        spawn.spawnCreep(spawn.getBodys(RoleType.Upgrader), newName, 
             {memory: {role: 'upgrader'}});
     }
     if(builders.length < CreepCount[rcl][RoleType.Builder]) {
         var newName = 'Builder' + Game.time;
         console.log('Spawning new harvester: ' + newName);
-        Game.spawns['Spawn1'].spawnCreep(Utils.getBody(RoleType.Builder,rcl), newName, 
+        spawn.spawnCreep(spawn.getBodys(RoleType.Worker), newName, 
             {memory: {role: 'builder'}});
+    }
+    if(harvesters.length < CreepCount[rcl][RoleType.Harvester]) {
+        var newName = 'Harvester' + Game.time;
+        console.log('Spawning new harvester: ' + newName);
+        spawn.spawnCreep(spawn.getBodys(RoleType.Harvester), newName, 
+            {memory:  {role: 'harvester'}});
     }
 
     if(Game.spawns['Spawn1'].spawning) { 

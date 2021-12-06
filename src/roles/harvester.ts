@@ -3,8 +3,8 @@ export class roleHarvester {
         if (creep.store.getFreeCapacity() > 0) {
             var sources = creep.room.find(FIND_SOURCES);
             var ruins = creep.room.find(FIND_RUINS).filter(x=>x.store[RESOURCE_ENERGY]>0);
-            console.log(ruins.length);
             if(ruins.length>0){
+                console.log(ruins.length);
                 if (creep.withdraw(ruins[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(ruins[0], { visualizePathStyle: { stroke: '#ffaa00' } });
                 }
