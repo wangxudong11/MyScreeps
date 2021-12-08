@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export class roleHarvester {
     static run(creep: Creep) {
         if (creep.store.getFreeCapacity() > 0) {
@@ -14,14 +16,15 @@ export class roleHarvester {
             }
         }
         else {
-            var targets = creep.room.find(FIND_STRUCTURES, {
+            //对目标进行排序，顺序为扩展（extension）-》spawn-》Tower
+            var targets = _.sortBy(creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_EXTENSION ||
                         structure.structureType == STRUCTURE_SPAWN ||
                         structure.structureType == STRUCTURE_TOWER) &&
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                 }
-            });
+            }),x=>x.structureType);
             if (targets.length > 0) {
                 if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffffff' } });

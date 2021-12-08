@@ -3,12 +3,7 @@ export enum RoleType{
     Builder='builder',
     Upgrader='upgrader',
     Worker='worker',
-}
-export const CreepCount = {
-    [1]: {[RoleType.Harvester]:2,[RoleType.Builder]:1,[RoleType.Upgrader]:1},
-    [2]: {[RoleType.Harvester]:2,[RoleType.Builder]:2,[RoleType.Upgrader]:1},
-    [3]: {[RoleType.Harvester]:2,[RoleType.Builder]:2,[RoleType.Upgrader]:1},
-    [4]: {[RoleType.Harvester]:2,[RoleType.Builder]:2,[RoleType.Upgrader]:1},
+    Manager='manager',
 }
 
 /**

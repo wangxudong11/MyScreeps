@@ -1,4 +1,4 @@
-import { calcBodyPart } from './utils'
+import { calcBodyPart,RoleType } from './utils'
 
 /**
  * 设置项
@@ -18,6 +18,15 @@ const getBodyConfig = function(...bodySets: [ BodySet, BodySet, BodySet, BodySet
     })
 
     return config
+}
+/**
+ * 不同角色在1-8级时对应的配置数量
+ */
+export const CreepCount = {
+    [1]: {[RoleType.Harvester]:2,[RoleType.Builder]:1,[RoleType.Upgrader]:1,[RoleType.Manager]:1},
+    [2]: {[RoleType.Harvester]:2,[RoleType.Builder]:2,[RoleType.Upgrader]:1,[RoleType.Manager]:1},
+    [3]: {[RoleType.Harvester]:2,[RoleType.Builder]:3,[RoleType.Upgrader]:1,[RoleType.Manager]:1},
+    [4]: {[RoleType.Harvester]:2,[RoleType.Builder]:3,[RoleType.Upgrader]:1,[RoleType.Manager]:1},
 }
 
 /**

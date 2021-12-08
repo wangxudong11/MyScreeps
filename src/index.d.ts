@@ -13,6 +13,24 @@ interface Memory {
             bodys: BodyAutoConfigConstant | BodyPartConstant[]
         }
     }
+    sourceConfigs:{
+        [sourceId:string]:{
+            // 绑定ContainerId
+            containerId:string,
+            room:string,
+            /**
+             * 资源采集位
+             */
+            seat:number,
+        }
+    }
+    constructionList:{
+        [roomName:string]:{
+            [siteId:string]:{
+                index:number
+            }
+        }
+    }
 }
 
 type CreepRoleConstant = BodyAutoConfigConstant;
@@ -106,4 +124,8 @@ type BodyConfig = {
 
 interface StructureSpawn {
     getBodys(bodyType: BodyAutoConfigConstant): BodyPartConstant[];
+}
+
+interface StructureTower{
+    work():void;
 }
