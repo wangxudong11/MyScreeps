@@ -32,8 +32,102 @@ interface Memory {
         }
     }
 }
+interface CreepMemory {
+    /**
+     * 该 creep 的角色
+     */
+    role?: string
+    /**
+     * 该Creep是否在执行升级操作
+     */
+    upgrading?:boolean
+    /**
+     * 该Creep是否在执行建造操作
+     */
+    building?:boolean
 
-type CreepRoleConstant = BodyAutoConfigConstant;
+    
+    // creep 是否已经准备好可以工作了
+    ready?: boolean
+    // 是否在工作
+    working?: boolean
+    // creep 在工作时需要的自定义配置，在孵化时由 spawn 复制
+    data?: CreepData
+    // 该 Creep 是否在站着不动进行工作
+    // 该字段用于减少 creep 向 Room.restrictedPos 里添加自己位置的次数
+    standed?: boolean
+    // 要采集的资源 Id
+    sourceId?: string
+    // 要存放到的目标建筑
+    targetId?: string
+}
+
+// 所有的 creep 角色
+type CreepRoleConstant = BaseRoleConstant 
+
+// 房间基础运营
+type BaseRoleConstant = 
+    'harvester' |
+    'collector' |
+    'miner' |
+    'upgrader' |
+    'filler' |
+    'builder' |
+    'repairer'
+
+// 房间高级运营
+type AdvancedRoleConstant = 
+    'manager' |
+    'processor'
+
+// 远程单位
+type RemoteRoleConstant = 
+    'claimer' |
+    'reserver' |
+    'signer' |
+    'remoteBuilder' |
+    'remoteUpgrader' |
+    'remoteHarvester' |
+    'depositHarvester' |
+    'pbAttacker' |
+    'pbHealer' |
+    'pbCarrier' |
+    'moveTester' |
+    'reiver'
+
+// 战斗单位
+type WarRoleConstant =
+    'soldier' |
+    'doctor' |
+    'boostDoctor' |
+    'dismantler' |
+    'boostDismantler' |
+    'apocalypse' |
+    'defender'
+
+
+/**
+ * creep 工作逻辑集合
+ * 包含了每个角色应该做的工作
+ */
+ type CreepWork = {
+    [role in CreepRoleConstant]: (data: CreepData) => ICreepConfig
+}
+
+interface ICreepConfig {
+    // 每次死后都会进行判断，只有返回 true 时才会重新发布孵化任务
+    isNeed?: (room: Room, creepName: string, preMemory: CreepMemory) => boolean
+    // 准备阶段执行的方法, 返回 true 时代表准备完成
+    prepare?: (creep: Creep) => boolean
+    // creep 获取工作所需资源时执行的方法
+    // 返回 true 则执行 target 阶段，返回其他将继续执行该方法
+    source?: (creep: Creep) => boolean
+    // creep 工作时执行的方法,
+    // 返回 true 则执行 source 阶段，返回其他将继续执行该方法
+    target: (creep: Creep) => boolean
+    // 每个角色默认的身体组成部分
+    bodys: BodyAutoConfigConstant | BodyPartConstant[]
+}
 
 /**
  * 所有 creep 角色的 data
@@ -54,6 +148,10 @@ interface HarvesterData {
     sourceId: string
     // 把采集到的资源存到哪里存在哪里
     targetId: string
+    /**
+     * Container建筑Id
+     */
+    constructionSiteId:string
 }
 
 /**
@@ -128,4 +226,24 @@ interface StructureSpawn {
 
 interface StructureTower{
     work():void;
+}
+
+/**
+ * Creep 拓展
+ * 来自于 mount.creep.ts
+ */
+ interface Creep {
+    /**
+     * 发送日志
+     * 
+     * @param content 日志内容
+     * @param instanceName 发送日志的实例名
+     * @param color 日志前缀颜色
+     * @param notify 是否发送邮件
+     */
+    log(content:string, color?: Colors, notify?: boolean): void
+
+    work(): void
+    goTo(target: RoomPosition, range?: number): CreepMoveReturnCode | ERR_NO_PATH | ERR_INVALID_TARGET | ERR_NOT_FOUND
+    getEngryFrom(target: Structure|Source): ScreepsReturnCode
 }

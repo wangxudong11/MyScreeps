@@ -19,7 +19,7 @@ export class roleBuilder {
 		var source;
 		if (!Memory.creepConfigs[creep.name]) {
 			Memory.creepConfigs[creep.name] = {
-				role: 'worker',
+				role: 'builder',
 				data: { sourceId: creep.room.find(FIND_SOURCES)[0].id, targetId: creep.room.find(FIND_CONSTRUCTION_SITES)[0].id },
 				spawnRoom: creep.room.name,
 				bodys: 'worker'

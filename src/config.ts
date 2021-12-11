@@ -13,9 +13,12 @@ export const Config = {
             const creep = Game.creeps[name];
             switch (creep.memory.role) {
                 case RoleType.Builder:
-
+                    this.builderInit(creep);
                     break;
-
+                case RoleType.Harvester:
+                    this.harvesterInit(creep);
+                case RoleType.Upgrader:
+                    this.upgraderInit(creep);
                 default:
                     break;
             }
@@ -65,7 +68,7 @@ export const Config = {
     // builder逻辑
     builderInit(creep: Creep) {
         Memory.creepConfigs[creep.name] = {
-            role: 'worker',
+            role: 'builder',
             data: { sourceId: creep.room.find(FIND_SOURCES)[0].id, targetId: creep.room.find(FIND_CONSTRUCTION_SITES)[0].id },
             spawnRoom: creep.room.name,
             bodys: 'worker'
@@ -82,7 +85,7 @@ export const Config = {
         };
     },
     initSource() {
-        var sources: Source[]=[];
+        var sources: Source[] = [];
         _.each(Game.rooms, x => sources = sources.concat(x.find(FIND_SOURCES)));
         for (const name in sources) {
             if (!Memory.sourceConfigs[sources[name].id]) {
@@ -118,7 +121,7 @@ export const Config = {
     //                
     //            }
     //        }
-//
+    //
     //        if (Object.prototype.hasOwnProperty.call(object, key)) {
     //            const element = object[key];
     //            
