@@ -16,13 +16,13 @@
     "@rollup/plugin-node-resolve": "^13.0.6",
     "@screeps/common": "^2.15.3",
     "@types/jest": "^27.0.3",
-    "jest": "^27.4.3",
-    "rollup": "^2.60.1",
+    "jest": "^27.4.4",
+    "rollup": "^2.61.1",
     "rollup-plugin-clear": "^2.0.7",
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-screeps": "^1.0.1",
     "rollup-plugin-typescript2": "^0.31.1",
-    "ts-jest": "^27.0.7",
-    "typescript": "^4.5.2"
+    "ts-jest": "^27.1.1",
+    "typescript": "^4.5.3"
   }
 }

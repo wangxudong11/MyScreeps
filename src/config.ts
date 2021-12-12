@@ -1,49 +1,74 @@
 import _, { filter } from "lodash";
-import { RoleType } from "./utils";
+import { log, RoleType } from "./utils";
 
-export const Config = {
-    init(): void {
-        this.initSource();
-        this.initCreep();
-    },
+export default () => {
+    var config = new Config();
+    config.initSource();
+    config.initCreep();
+}
+
+export class Config {
     initCreep() {
         for (const name in Game.creeps) {
             if (Memory.creepConfigs[name])
                 continue;
             const creep = Game.creeps[name];
             switch (creep.memory.role) {
-                case RoleType.Builder:
-
+                case RoleType.Harvester:
+                    this.harvesterInit(creep);
                     break;
-
+                case RoleType.Builder:
+                    this.builderInit(creep);
+                case RoleType.Upgrader:
+                    this.upgraderInit(creep);
+                case RoleType.Manager:
+                    this.managerInit(creep);
                 default:
                     break;
             }
         }
-    },
+    }
     // harvester逻辑
     harvesterInit(creep: Creep) {
-        var harvesters = _.find(Memory.creepConfigs, x => x.role == 'harvester' && x.spawnRoom == creep.room.name);
+        var sourceCount: {
+            [sourceId: string]: number
+        }={};
+        for (const key in Memory.creepConfigs) {
+            var item = Memory.creepConfigs[key];
+            if (item.role == 'harvester' && item.spawnRoom == creep.room.name) {
+                var data = item.data as HarvesterData;
+                if (!sourceCount[data.sourceId])
+                    sourceCount[data.sourceId] = 1;
+                else
+                    sourceCount[data.sourceId]++;
+            }
+        }
+
         let sourceId: string;
         let targetId: string;
         // 确认资源点
         const sourceConfigs = Memory.sourceConfigs;
-        var count = _.countBy(harvesters, "data.sourceId");
-        for (const key in count) {
-            if (count[key] >= sourceConfigs[key].seat)
+
+        for (const key in sourceCount) {
+            log(sourceCount[key].toString(), ["source(" + key + ")对应creep占用数量"], "green");
+            log(sourceConfigs[key].seat.toString(), ["source(" + key + ")限制占用数量上限"], "green");
+            if (sourceCount[key] >= sourceConfigs[key].seat) {
                 continue;
+            }
             sourceId = key;
+            break;
         }
 
         if (!sourceId)
-            return;
+            sourceId = creep.room.find(FIND_SOURCES)[0].id;
 
         var sourceConfig = sourceConfigs[sourceId];
+        log(sourceConfig.containerId, ["source(" + sourceId + ")对应containerID",'待确认'], "green");
         if (sourceConfig.containerId) {
-            if (Game.getObjectById(sourceConfig.containerId) as StructureContainer)
-                targetId = sourceConfig.containerId;
+            targetId = sourceConfig.containerId;
+            log(targetId, ["source(" + sourceId + ")对应containerID"], "green");
         }
-        if (!targetId) {
+        else if (!targetId) {
             var targets = _.sortBy(creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_EXTENSION ||
@@ -61,28 +86,43 @@ export const Config = {
             spawnRoom: creep.room.name,
             bodys: 'harvester'
         };
-    },
+    }
     // builder逻辑
     builderInit(creep: Creep) {
+        var sources = _.sortBy(creep.room.find(FIND_STRUCTURES, {
+            filter: x => x.structureType == STRUCTURE_CONTAINER
+        }), x => -(x as StructureContainer).store.getUsedCapacity());
+
+        log(creep.name, ["创建Builder"], "green");
+
         Memory.creepConfigs[creep.name] = {
             role: 'worker',
-            data: { sourceId: creep.room.find(FIND_SOURCES)[0].id, targetId: creep.room.find(FIND_CONSTRUCTION_SITES)[0].id },
+            data: { sourceId: sources[0].id, targetId: creep.room.find(FIND_CONSTRUCTION_SITES)[0].id },
             spawnRoom: creep.room.name,
             bodys: 'worker'
         };
-    },
+    }
     // upgrader逻辑
-    upgraderInit(name: string) {
-        var creep = Game.creeps[name];
-        Memory.creepConfigs[name] = {
+    upgraderInit(creep: Creep) {
+        Memory.creepConfigs[creep.name] = {
             role: 'upgrader',
             data: { sourceId: creep.room.find(FIND_SOURCES)[0].id, targetId: creep.room.controller.id },
             spawnRoom: creep.room.name,
             bodys: 'upgrader'
         };
-    },
+    }
+    managerInit(creep: Creep) {
+        log(creep.name, ["创建Manager"], "green");
+        // 作为物流运输人员，需要确认source
+        Memory.creepConfigs[creep.name] = {
+            role: 'worker',
+            data: { sourceId: creep.room.find(FIND_SOURCES)[0].id, targetId: "" },
+            spawnRoom: creep.room.name,
+            bodys: 'worker'
+        };
+    }
     initSource() {
-        var sources: Source[]=[];
+        var sources: Source[] = [];
         _.each(Game.rooms, x => sources = sources.concat(x.find(FIND_SOURCES)));
         for (const name in sources) {
             if (!Memory.sourceConfigs[sources[name].id]) {
@@ -105,7 +145,7 @@ export const Config = {
                 };
             }
         }
-    },
+    }
     //initConStruction(){
     //    let constructionList=Memory.constructionList;
     //    for (const name in Game.rooms) {
@@ -118,7 +158,7 @@ export const Config = {
     //                
     //            }
     //        }
-//
+    //
     //        if (Object.prototype.hasOwnProperty.call(object, key)) {
     //            const element = object[key];
     //            

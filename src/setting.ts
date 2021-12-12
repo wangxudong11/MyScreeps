@@ -24,9 +24,9 @@ const getBodyConfig = function(...bodySets: [ BodySet, BodySet, BodySet, BodySet
  */
 export const CreepCount = {
     [1]: {[RoleType.Harvester]:2,[RoleType.Builder]:1,[RoleType.Upgrader]:1,[RoleType.Manager]:1},
-    [2]: {[RoleType.Harvester]:2,[RoleType.Builder]:2,[RoleType.Upgrader]:1,[RoleType.Manager]:1},
-    [3]: {[RoleType.Harvester]:2,[RoleType.Builder]:3,[RoleType.Upgrader]:1,[RoleType.Manager]:1},
-    [4]: {[RoleType.Harvester]:2,[RoleType.Builder]:3,[RoleType.Upgrader]:1,[RoleType.Manager]:1},
+    [2]: {[RoleType.Harvester]:2,[RoleType.Builder]:1,[RoleType.Upgrader]:1,[RoleType.Manager]:1,},
+    [3]: {[RoleType.Harvester]:3,[RoleType.Builder]:1,[RoleType.Upgrader]:2,[RoleType.Manager]:2,},
+    [4]: {[RoleType.Harvester]:3,[RoleType.Builder]:1,[RoleType.Upgrader]:2,[RoleType.Manager]:2,},
 }
 
 /**

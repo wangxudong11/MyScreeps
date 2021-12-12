@@ -11,4 +11,8 @@ interface CreepMemory {
      * 该Creep是否在执行建造操作
      */
     building?:boolean
+    /**
+     * 是否正在工作
+     */
+    working?:boolean
 }
